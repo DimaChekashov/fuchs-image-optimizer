@@ -5,10 +5,16 @@ import { createAppServer } from './server.js';
 /**
  * Starts the local server and opens its URL once it is listening.
  * @param {(url: string) => Promise<unknown>} openBrowser
- * @returns {Promise<{server: import('node:http').Server, url: string}>}
+ * @returns {Promise<{server: import('node:http').Server, url: string, stop: () => void}>}
  */
 export async function startApplication(openBrowser = open) {
-  const server = createAppServer();
+  const shutdown = new AbortController();
+  const server = createAppServer({ signal: shutdown.signal });
+  const stop = () => {
+    shutdown.abort();
+    server.close();
+    server.closeAllConnections();
+  };
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const address = server.address();
@@ -23,17 +29,16 @@ export async function startApplication(openBrowser = open) {
   } catch (error) {
     console.warn('Не удалось открыть браузер. Откройте адрес вручную.', error);
   }
-  return { server, url };
+  return { server, url, stop };
 }
 
 if (import.meta.main) {
   try {
-    const { server } = await startApplication();
+    const application = await startApplication();
     const stop = () => {
       process.removeListener('SIGINT', stop);
       process.removeListener('SIGTERM', stop);
-      server.close();
-      server.closeAllConnections();
+      application.stop();
     };
     process.once('SIGINT', stop);
     process.once('SIGTERM', stop);

@@ -1,17 +1,19 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { AppError } from './errors.js';
+import { createOptimizeRoute, sendError } from './optimize-route.js';
 
 /**
  * Creates an unbound local HTTP server.
+ * @param {import('./optimize-route.js').OptimizeSettings} [settings]
  * @returns {import('node:http').Server}
  */
-export function createAppServer() {
+export function createAppServer(settings = {}) {
+  const optimize = createOptimizeRoute(settings);
   const server = createServer((request, response) => {
-    void handleRequest(request, response).catch((error) => {
-      console.error('HTTP request failed', error);
+    void handleRequest(request, response, optimize).catch((error) => {
       if (!response.destroyed && !response.headersSent) {
-        sendError(response, new AppError('INTERNAL_ERROR'));
+        sendError(response, error);
       } else {
         response.destroy();
       }
@@ -23,15 +25,24 @@ export function createAppServer() {
 /**
  * @param {import('node:http').IncomingMessage} request
  * @param {import('node:http').ServerResponse} response
+ * @param {ReturnType<typeof createOptimizeRoute>} optimize
  * @returns {Promise<void>}
  */
-async function handleRequest(request, response) {
+async function handleRequest(request, response, optimize) {
   const expectedHost = `127.0.0.1:${request.socket.localPort}`;
   if (request.headers.host !== expectedHost) {
     sendError(response, new AppError('FORBIDDEN_ORIGIN'));
     return;
   }
   const pathname = request.url?.split('?')[0];
+  if (pathname === '/api/optimize') {
+    if (request.method !== 'POST') {
+      response.setHeader('Allow', 'POST');
+      throw new AppError('METHOD_NOT_ALLOWED');
+    }
+    await optimize(request, response);
+    return;
+  }
   if (pathname !== '/') {
     sendError(response, new AppError('NOT_FOUND'));
     return;
@@ -50,18 +61,3 @@ async function handleRequest(request, response) {
   response.end(html);
 }
 
-/**
- * @param {import('node:http').ServerResponse} response
- * @param {AppError} error
- * @returns {void}
- */
-function sendError(response, error) {
-  response.writeHead(error.status, {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store',
-    'Connection': 'close',
-  });
-  response.end(JSON.stringify({
-    error: { code: error.code, message: error.message },
-  }));
-}
