@@ -19,6 +19,14 @@ test('server factory is unbound and routes enforce the HTTP contract', async (t)
   assert.equal(page.status, 200);
   assert.match(page.headers.get('content-type') ?? '', /^text\/html/);
   assert.match(await page.text(), /<html lang="ru">/);
+  for (const [path, type] of [
+    ['/app.js', 'text/javascript'], ['/styles.css', 'text/css'],
+  ]) {
+    const response = await fetch(url + path);
+    assert.equal(response.status, 200);
+    assert.ok(response.headers.get('content-type')?.startsWith(type));
+    assert.ok((await response.text()).length > 0);
+  }
 
   for (const { path, method, status, code } of [
     { path: '/missing', method: 'GET', status: 404, code: 'NOT_FOUND' },

@@ -43,7 +43,13 @@ async function handleRequest(request, response, optimize) {
     await optimize(request, response);
     return;
   }
-  if (pathname !== '/') {
+  const resources = new Map([
+    ['/', ['index.html', 'text/html; charset=utf-8']],
+    ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+    ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
+  ]);
+  const resource = resources.get(pathname ?? '');
+  if (!resource) {
     sendError(response, new AppError('NOT_FOUND'));
     return;
   }
@@ -52,12 +58,12 @@ async function handleRequest(request, response, optimize) {
     sendError(response, new AppError('METHOD_NOT_ALLOWED'));
     return;
   }
-  const html = await readFile(new URL('../public/index.html', import.meta.url));
+  const [filename, contentType] = resource;
+  const html = await readFile(new URL(`../public/${filename}`, import.meta.url));
   response.writeHead(200, {
-    'Content-Type': 'text/html; charset=utf-8',
+    'Content-Type': contentType,
     'Content-Length': html.length,
     'Cache-Control': 'no-store',
   });
   response.end(html);
 }
-

@@ -1,0 +1,44 @@
+:root {
+  font-family: "Inter", system-ui, sans-serif;
+  color: #29251f;
+  background: #f4f1eb;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1080px; margin: 0 auto; padding: 52px 28px 28px; }
+.brand { font-weight: 700; letter-spacing: -.02em; color: #9c3c17; }
+h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.05; letter-spacing: -.055em; margin: 28px 0 20px; }
+header > p:last-child { color: #625b50; font-size: 1.1rem; }
+.workspace { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; margin-top: 36px; }
+form, .result-panel { padding: 28px; border: 1px solid #ddd5c9; border-radius: 18px; background: #fffcf7; }
+fieldset { padding: 0; border: 0; margin: 0; min-width: 0; }
+legend, h2 { font-size: 1.3rem; font-weight: 650; margin: 0 0 26px; padding: 0; }
+label { display: block; font-weight: 600; margin: 24px 0 10px; }
+input, select, button, a { font: inherit; }
+input[type="file"], select { width: 100%; padding: 12px; background: #f6f2ec; border: 1px solid #d2c7b7; border-radius: 8px; }
+input[type="file"] { font-size: .9rem; }
+input[type="file"]::file-selector-button { padding: 8px; margin-right: 10px; border: 0; background: #e6dfd3; border-radius: 5px; cursor: pointer; }
+input[type="range"] { width: 100%; accent-color: #a94118; }
+output { float: right; font-variant-numeric: tabular-nums; color: #9c3c17; }
+.hint, footer { color: #6a6257; font-size: .875rem; line-height: 1.6; }
+button, .download { display: inline-block; text-align: center; padding: 14px 20px; border: 0; border-radius: 9px; background: #a94118; color: white; font-weight: 600; text-decoration: none; cursor: pointer; }
+button { width: 100%; margin-top: 22px; }
+button:hover, .download:hover { background: #873310; }
+fieldset:disabled { opacity: .65; }
+button:disabled { cursor: wait; }
+:focus-visible { outline: 3px solid #b4471a; outline-offset: 4px; }
+#status { line-height: 1.6; color: #625b50; }
+#status[data-error="true"] { color: #a02316; }
+dl { margin: 28px 0; }
+dl > div { display: flex; justify-content: space-between; gap: 20px; padding: 16px 0; border-bottom: 1px solid #e7e0d5; }
+dt { color: #625b50; }
+dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+#difference { line-height: 1.6; margin-bottom: 28px; }
+footer { margin-top: 28px; }
+[hidden] { display: none !important; }
+@media (max-width: 700px) {
+  main { padding: 28px 18px; }
+  .workspace { grid-template-columns: 1fr; }
+  form, .result-panel { padding: 22px; }
+}
