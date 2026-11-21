@@ -46,6 +46,7 @@ async function handleRequest(request, response, optimize) {
   const resources = new Map([
     ['/', ['index.html', 'text/html; charset=utf-8']],
     ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+    ['/zip.js', ['zip.js', 'text/javascript; charset=utf-8']],
     ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ]);
   const resource = resources.get(pathname ?? '');

@@ -34,7 +34,18 @@ dl { margin: 28px 0; }
 dl > div { display: flex; justify-content: space-between; gap: 20px; padding: 16px 0; border-bottom: 1px solid #e7e0d5; }
 dt { color: #625b50; }
 dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-#difference { line-height: 1.6; margin-bottom: 28px; }
+.images { list-style: none; margin: 0; padding: 0; }
+.image-row { border-top: 1px solid #e7e0d5; padding: 20px 0; overflow-wrap: anywhere; }
+.image-row h3 { font-size: 1rem; margin: 12px 0; }
+.comparison { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.comparison .download { padding: 10px; font-size: .875rem; max-width: 100%; }
+.comparison > div { min-width: 0; }
+.comparison .thumbnail { max-width: 100%; }
+#download-all:disabled { opacity: .5; cursor: default; }
+.thumbnail { width: 96px; height: 96px; object-fit: contain; background: #f4f1eb; border-radius: 8px; }
+.image-state { line-height: 1.6; }
+.image-state[data-error="true"] { color: #a02316; }
+.workspace > * { min-width: 0; }
 footer { margin-top: 28px; }
 [hidden] { display: none !important; }
 @media (max-width: 700px) {

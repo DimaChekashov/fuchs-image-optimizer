@@ -20,7 +20,7 @@ test('server factory is unbound and routes enforce the HTTP contract', async (t)
   assert.match(page.headers.get('content-type') ?? '', /^text\/html/);
   assert.match(await page.text(), /<html lang="ru">/);
   for (const [path, type] of [
-    ['/app.js', 'text/javascript'], ['/styles.css', 'text/css'],
+    ['/app.js', 'text/javascript'], ['/zip.js', 'text/javascript'], ['/styles.css', 'text/css'],
   ]) {
     const response = await fetch(url + path);
     assert.equal(response.status, 200);
